@@ -15,13 +15,13 @@ function s.initial_effect(c)
     e2:SetCode(EVENT_SPSUMMON_SUCCESS)
     c:RegisterEffect(e2)
     
-    -- Add 1 Level 4 or lower monster from Deck to hand
+    -- Add 1 Level 4 or lower monster from Deck to hand during the End Phase
     local e3=Effect.CreateEffect(c)
     e3:SetDescription(aux.Stringid(id,1))
     e3:SetCategory(CATEGORY_SEARCH+CATEGORY_TOHAND)
-    e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
-    e3:SetCode(EVENT_TO_GRAVE)
-    e3:SetProperty(EFFECT_FLAG_DELAY)
+    e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
+    e3:SetCode(EVENT_PHASE+PHASE_END)
+    e3:SetRange(LOCATION_GRAVE)
     e3:SetCountLimit(1,{id,1})
     e3:SetCondition(s.thcon)
     e3:SetTarget(s.thtg)
@@ -46,9 +46,9 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
     end
 end
 
--- Search 1 Level 4 or lower monster
+-- Search 1 Level 4 or lower monster during the End Phase
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-    return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD) or (r&REASON_EFFECT)~=0 or (r&REASON_COST)~=0
+    return e:GetHandler():IsPreviousLocation(LOCATION_GRAVE)
 end
 
 function s.thfilter(c)
