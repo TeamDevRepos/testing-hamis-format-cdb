@@ -48,7 +48,7 @@ end
 
 -- Search 1 Level 4 or lower monster during the End Phase
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)
-    return e:GetHandler():IsPreviousLocation(LOCATION_GRAVE)
+    return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD+LOCATION_HAND+LOCATION_DECK+LOCATION_EXTRA) and e:GetHandler():GetTurnID()==Duel.GetTurnCount()
 end
 
 function s.thfilter(c)
