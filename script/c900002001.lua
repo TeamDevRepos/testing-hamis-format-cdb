@@ -1,5 +1,24 @@
 local s,id=GetID()
 function s.initial_effect(c)
+    -- This card remains in the Skill Zone
+    local e0=Effect.CreateEffect(c)
+    e0:SetType(EFFECT_TYPE_SINGLE)
+    e0:SetCode(EFFECT_CANNOT_TO_DECK)
+    e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
+    c:RegisterEffect(e0)
+    
+    e0=e0:Clone()
+    e0:SetCode(EFFECT_CANNOT_TO_HAND)
+    c:RegisterEffect(e0)
+    
+    e0=e0:Clone()
+    e0:SetCode(EFFECT_CANNOT_TO_GRAVE)
+    c:RegisterEffect(e0)
+    
+    e0=e0:Clone()
+    e0:SetCode(EFFECT_CANNOT_REMOVE)
+    c:RegisterEffect(e0)
+    
     -- Activate at the start of the Duel (before the Draw Phase)
     local e1=Effect.CreateEffect(c)
     e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
