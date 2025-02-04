@@ -14,13 +14,12 @@ function s.startcon(e,tp,eg,ep,ev,re,r,rp)
     return Duel.GetTurnCount()==1 and Duel.GetDrawCount(tp)>0
 end
 
--- Operation: Add "Change of Heart" from outside the Duel into the Deck and shuffle
+-- Operation: Add exactly 1 "Change of Heart" from outside the Duel into the Deck and shuffle
 function s.startop(e,tp,eg,ep,ev,re,r,rp)
+    if Duel.IsExistingMatchingCard(aux.FilterEqualFunction(Card.GetCode,04031928),tp,LOCATION_DECK,0,1,nil) then return end
     local tc=Duel.CreateToken(tp,04031928) -- Change of Heart's official ID
     Duel.SendtoDeck(tc,nil,SEQ_DECKSHUFFLE,REASON_RULE)
     Duel.ShuffleDeck(tp)
     Duel.Hint(HINT_SKILL_FLIP,tp,id|(1<<32))
     Duel.Hint(HINT_CARD,tp,id)
-    Duel.Hint(HINT_MESSAGE,tp,HINTMSG_ATOHAND)
-    Duel.Hint(HINT_MESSAGE,1-tp,HINTMSG_ATOHAND)
 end
