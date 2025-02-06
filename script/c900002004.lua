@@ -1,13 +1,12 @@
---Destiny Draw
 local s,id=GetID()
 function s.initial_effect(c)
-	--skill
 	aux.AddPreDrawSkillProcedure(c,1,false,s.flipcon,s.flipop)
 	aux.GlobalCheck(s,function()
 		s[0]=nil
 		s[1]=nil
 		s[2]=0
 		s[3]=0
+		s[4]={}
 		local ge1=Effect.CreateEffect(c)
 		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		ge1:SetCode(EVENT_ADJUST)
@@ -15,6 +14,7 @@ function s.initial_effect(c)
 		Duel.RegisterEffect(ge1,0)
 	end)
 end
+
 function s.checkop()
 	for tp=0,1 do
 		if not s[tp] then s[tp]=Duel.GetLP(tp) end
@@ -24,19 +24,19 @@ function s.checkop()
 		end
 	end
 end
+
 function s.flipcon(e,tp,eg,ep,ev,re,r,rp)
-	--condition
 	return Duel.GetCurrentChain()==0 and tp==Duel.GetTurnPlayer() and Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)>0
 		and Duel.GetDrawCount(tp)>0 and Duel.IsExistingMatchingCard(s.thfilter,tp,LOCATION_DECK,0,1,nil)
-		and s[2+tp]>=2000 and not s[4][tp]
+		and s[2+tp]>=1500 and not s[4][tp]
 end
+
 function s.thfilter(c)
-	return c:IsAbleToHand()
+	return c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsMonster() and c:IsAbleToHand()
 end
+
 function s.flipop(e,tp,eg,ep,ev,re,r,rp)
-	--ask if you want to activate the skill or not
 	if not Duel.SelectYesNo(tp,aux.Stringid(id,0)) then return end
-	--draw replace
 	local dt=Duel.GetDrawCount(tp)
 	if dt~=0 then
 		_replace_count=0
@@ -52,13 +52,12 @@ function s.flipop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.Hint(HINT_SKILL_FLIP,tp,id|(1<<32))
 	Duel.Hint(HINT_CARD,tp,id)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g~=0 then
-		if Duel.SendtoHand(g,nil,REASON_EFFECT)~=0 then
-			s[2+tp]=0
-			s[4][tp]=true
-		end
-		Duel.ConfirmCards(1-tp,g)
+	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
+	if #g>0 then
+		local sg=g:RandomSelect(tp,1,false) -- Selección completamente aleatoria
+		Duel.SendtoHand(sg,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,sg)
+		s[2+tp]=0
+		s[4][tp]=true -- Marca que la habilidad ya se usó
 	end
 end
