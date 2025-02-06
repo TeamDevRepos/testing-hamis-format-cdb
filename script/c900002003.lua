@@ -32,7 +32,7 @@ function s.flipcon(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.thfilter(c)
-	return c:IsAttribute(ATTRIBUTE_EARTH) and c:IsMonster() and c:IsAbleToHand()
+	return c:IsAttribute(ATTRIBUTE_DARK) and c:IsMonster() and c:IsAbleToHand()
 end
 
 function s.flipop(e,tp,eg,ep,ev,re,r,rp)
@@ -57,7 +57,6 @@ function s.flipop(e,tp,eg,ep,ev,re,r,rp)
 		local sg=g:RandomSelect(tp,1,false) -- Selección completamente aleatoria
 		Duel.SendtoHand(sg,nil,REASON_EFFECT)
 		Duel.ConfirmCards(1-tp,sg)
-		-- Duel.Hint(HINT_SKILL_FLIP,tp,id|(2<<32))
 		s[2+tp]=0
 		s[4][tp]=true -- Marca que la habilidad ya se usó
 	end
