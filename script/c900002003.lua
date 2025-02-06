@@ -52,14 +52,13 @@ function s.flipop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.Hint(HINT_SKILL_FLIP,tp,id|(1<<32))
 	Duel.Hint(HINT_CARD,tp,id)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
-	local g=Duel.SelectMatchingCard(tp,s.thfilter,tp,LOCATION_DECK,0,1,1,nil)
-	if #g~=0 then
-		if Duel.SendtoHand(g,nil,REASON_EFFECT)~=0 then
-			Duel.Hint(HINT_SKILL_FLIP,tp,id|(2<<32))
-			s[2+tp]=0
-			s[4][tp]=true -- Marca que la habilidad ya se usó
-		end
-		Duel.ConfirmCards(1-tp,g)
+	local g=Duel.GetMatchingGroup(s.thfilter,tp,LOCATION_DECK,0,nil)
+	if #g>0 then
+		local sg=g:RandomSelect(tp,1,false) -- Selección completamente aleatoria
+		Duel.SendtoHand(sg,nil,REASON_EFFECT)
+		Duel.ConfirmCards(1-tp,sg)
+		Duel.Hint(HINT_SKILL_FLIP,tp,id|(2<<32))
+		s[2+tp]=0
+		s[4][tp]=true -- Marca que la habilidad ya se usó
 	end
 end
