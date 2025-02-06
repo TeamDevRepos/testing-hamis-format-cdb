@@ -27,8 +27,9 @@ end
 function s.flipop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ResetFlagEffect(tp,id)
 	-- Reemplaza el robo normal por un monstruo aleatorio de atributo TIERRA
-	local g=Duel.GetMatchingGroup(Card.IsAttribute,tp,LOCATION_DECK,0,nil,ATTRIBUTE_EARTH)
+	local g=Duel.GetMatchingGroup(function(c) return c:IsAttribute(ATTRIBUTE_EARTH) and c:IsMonster() end, tp, LOCATION_DECK, 0, nil)
 	if #g>0 then
+		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATOHAND)
 		local sg=g:RandomSelect(tp,1)
 		Duel.SendtoHand(sg,nil,REASON_RULE)
 		Duel.ConfirmCards(1-tp,sg)
