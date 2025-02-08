@@ -5,7 +5,7 @@ function s.initial_effect(c)
 	aux.AddPreDrawSkillProcedure(c,1,false,s.flipcon,s.flipop)
 
 	-- Personalizar el cover usando Auxiliary.GetCover
-    local coverNum = 2  -- Cambia este número según el diseño deseado
+    local coverNum = 302000002  -- Cambia este número según el diseño deseado
     local coverID = Auxiliary.GetCover(c, coverNum)
 
 	aux.GlobalCheck(s,function()
