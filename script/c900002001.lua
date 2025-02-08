@@ -1,6 +1,6 @@
 local s,id=GetID()
 function s.initial_effect(c)
-    aux.AddSkillProcedure(c,2,false,nil,nil)
+    aux.AddSkillProcedure(c,16,false,nil,nil)
     
     -- This card remains in the Skill Zone
     local e0=Effect.CreateEffect(c)
