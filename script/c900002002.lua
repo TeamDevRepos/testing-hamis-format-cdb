@@ -43,7 +43,7 @@ function s.flipop(e,tp,eg,ep,ev,re,r,rp)
 	if not Duel.SelectYesNo(tp,aux.Stringid(id,0)) then return end
 	
 	-- Aplicar el cover personalizado
-    local coverNum = 2  -- Número personalizado para el cover
+    local coverNum = 302000002  -- Número personalizado para el cover
     local coverID = Auxiliary.GetCover(e:GetHandler(), coverNum)
     Duel.Hint(HINT_SKILL_COVER, tp, coverID)
 
