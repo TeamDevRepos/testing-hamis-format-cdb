@@ -39,7 +39,7 @@ function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 
 function s.setfilter(c)
-	return c:IsSetCard(0x79) and c:IsType(TYPE_SPELL+TYPE_TRAP) and c:IsSSetable()
+	return c:IsSetCard(0x7c) and c:IsSpellTrap() and c:IsSSetable()
 end
 
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
@@ -72,7 +72,7 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 end
 
 function s.aclimit(e,re,tp)
-	return re:IsActiveType(TYPE_SPELL+TYPE_TRAP) and not re:GetHandler():IsSetCard(0x79)
+	return re:IsActiveType(TYPE_SPELL+TYPE_TRAP) and not re:GetHandler():IsSetCard(0x7c)
 end
 
 function s.atkval(e,c)
