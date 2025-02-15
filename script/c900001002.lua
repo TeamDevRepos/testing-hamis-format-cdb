@@ -28,12 +28,14 @@ function s.initial_effect(c)
 end
 
 function s.setcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) and e:GetHandler():IsPreviousLocation(LOCATION_EXTRA)
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION)
 end
 
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(aux.TRUE,tp,LOCATION_ONFIELD,0,1,nil) and
-		Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,1,nil) end
+	if chk==0 then 
+		local ct=Duel.GetMatchingGroupCount(aux.TRUE,tp,LOCATION_ONFIELD,0,nil)
+		return ct>0 and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,ct,nil)
+	end
 end
 
 function s.setfilter(c)
@@ -48,10 +50,12 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 		local ct=Duel.SendtoGrave(g,REASON_EFFECT)
 		if ct>0 then
 			local sg=Duel.GetMatchingGroup(s.setfilter,tp,LOCATION_DECK,0,nil)
-			if #sg>0 then
+			if #sg>=ct then
 				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
-				local setg=sg:Select(tp,1,ct,nil)
-				Duel.SSet(tp,setg)
+				local setg=aux.SelectUnselectGroup(sg,e,tp,ct,ct,aux.dncheck,1,tp,HINTMSG_SET)
+				if #setg>0 then
+					Duel.SSet(tp,setg)
+				end
 			end
 		end
 	end
@@ -72,5 +76,5 @@ function s.aclimit(e,re,tp)
 end
 
 function s.atkval(e,c)
-	return Duel.GetCounter(e:GetHandlerPlayer(),1,0,0x79)*100
+	return Duel.GetMatchingGroupCount(Card.IsSetCard,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil,0x79)*100
 end
