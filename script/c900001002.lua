@@ -28,7 +28,7 @@ function s.initial_effect(c)
 end
 
 function s.setcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION)
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION) or (e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) and e:GetHandler():IsPreviousLocation(LOCATION_EXTRA))
 end
 
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
