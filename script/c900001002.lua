@@ -42,6 +42,10 @@ function s.setfilter(c)
 	return c:IsSetCard(0x7c) and c:IsSpellTrap() and c:IsSSetable()
 end
 
+function s.atkfilter(c)
+	return c:IsFaceup() and c:IsSpellTrap() and c:IsSetCard(0x7c)
+end
+
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
@@ -76,5 +80,5 @@ function s.aclimit(e,re,tp)
 end
 
 function s.atkval(e,c)
-	return Duel.GetMatchingGroupCount(s.setfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil)*100
+	return Duel.GetMatchingGroupCount(s.atkfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil)*100
 end
