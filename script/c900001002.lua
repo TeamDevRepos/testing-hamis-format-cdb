@@ -28,7 +28,7 @@ function s.initial_effect(c)
 end
 
 function s.setcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetHandler():IsSummonType(SUMMON_TYPE_FUSION) or (e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) and e:GetHandler():IsPreviousLocation(LOCATION_EXTRA))
+	return e:GetHandler():IsSummonType(SUMMON_TYPE_SPECIAL) and e:GetHandler():IsPreviousLocation(LOCATION_EXTRA)
 end
 
 function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -42,15 +42,17 @@ end
 
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local g=Duel.GetMatchingGroup(aux.TRUE,tp,LOCATION_ONFIELD,0,nil)
-	if #g==0 then return end
-	local ct=Duel.SendtoGrave(g,REASON_EFFECT)
-	if ct>0 then
-		local sg=Duel.GetMatchingGroup(s.setfilter,tp,LOCATION_DECK,0,nil)
-		if #sg==0 then return end
-		local setg=aux.SelectUnselectGroup(sg,e,tp,1,ct,aux.dncheck,1,tp,HINTMSG_SET)
-		if #setg>0 then
-			Duel.SSet(tp,setg)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
+	local g=Duel.SelectMatchingCard(tp,aux.TRUE,tp,LOCATION_ONFIELD,0,1,99,nil)
+	if #g>0 then
+		local ct=Duel.SendtoGrave(g,REASON_EFFECT)
+		if ct>0 then
+			local sg=Duel.GetMatchingGroup(s.setfilter,tp,LOCATION_DECK,0,nil)
+			if #sg>0 then
+				Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SET)
+				local setg=sg:Select(tp,1,ct,nil)
+				Duel.SSet(tp,setg)
+			end
 		end
 	end
 
