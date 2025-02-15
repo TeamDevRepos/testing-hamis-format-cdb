@@ -76,5 +76,5 @@ function s.aclimit(e,re,tp)
 end
 
 function s.atkval(e,c)
-	return Duel.GetMatchingGroupCount(Card.IsSetCard,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil,0x79)*100
+	return Duel.GetMatchingGroupCount(s.setfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil)*100
 end
