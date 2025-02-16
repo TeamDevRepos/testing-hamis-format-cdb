@@ -4,10 +4,10 @@ function s.initial_effect(c)
 	c:EnableReviveLimit()
 	Fusion.AddProcMixN(c,true,true,aux.FilterBoolFunctionEx(Card.IsAttribute,ATTRIBUTE_FIRE),2)
 
-	-- Set Fire Formation Spells/Traps and Special Summon Fire Fist (Level 4 or lower)
+	-- Set Fire Formation Spells/Traps
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(id,0))
-	e1:SetCategory(CATEGORY_TOGRAVE+CATEGORY_SEARCH+CATEGORY_SPECIAL_SUMMON)
+	e1:SetCategory(CATEGORY_TOGRAVE+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e1:SetProperty(EFFECT_FLAG_DELAY)
 	e1:SetCode(EVENT_SPSUMMON_SUCCESS)
@@ -48,7 +48,6 @@ function s.settg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then 
 		local ct=Duel.GetMatchingGroupCount(aux.TRUE,tp,LOCATION_ONFIELD,0,nil)
 		return ct>0 and Duel.IsExistingMatchingCard(s.setfilter,tp,LOCATION_DECK,0,ct,nil)
-			and Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp)
 	end
 end
 
@@ -56,8 +55,8 @@ function s.setfilter(c)
 	return c:IsSetCard(0x7c) and c:IsSpellTrap() and c:IsSSetable()
 end
 
-function s.spfilter(c,e,tp)
-	return c:IsSetCard(0x79) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+function s.atkfilter(c)
+	return c:IsFaceup() and c:IsSpellTrap() and c:IsSetCard(0x7c)
 end
 
 function s.setop(e,tp,eg,ep,ev,re,r,rp)
@@ -78,15 +77,6 @@ function s.setop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 
-	-- Special Summon 1 Level 4 or lower Fire Fist monster from GY
-	if Duel.IsExistingMatchingCard(s.spfilter,tp,LOCATION_GRAVE,0,1,nil,e,tp) and Duel.GetLocationCount(tp,LOCATION_MZONE)>0 then
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-		local sg=Duel.SelectMatchingCard(tp,s.spfilter,tp,LOCATION_GRAVE,0,1,1,nil,e,tp)
-		if #sg>0 then
-			Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP)
-		end
-	end
-
 	-- Restrict activation of non-Fire Formation S/T
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -104,10 +94,6 @@ end
 
 function s.atkval(e,c)
 	return Duel.GetMatchingGroupCount(s.atkfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil)*200
-end
-
-function s.atkfilter(c)
-	return c:IsFaceup() and c:IsSpellTrap() and c:IsSetCard(0x7c)
 end
 
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
