@@ -26,13 +26,16 @@ function s.initial_effect(c)
 	e2:SetValue(s.atkval)
 	c:RegisterEffect(e2)
 
-	-- Negate Spell/Trap if controlling 2 or more Fire Formation
+	-- Negate Spell/Trap by banishing a Fire Formation
 	local e3=Effect.CreateEffect(c)
 	e3:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
-	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_QUICK_O)
 	e3:SetCode(EVENT_CHAINING)
 	e3:SetRange(LOCATION_MZONE)
+	e3:SetCountLimit(1)
 	e3:SetCondition(s.negcon)
+	e3:SetCost(s.negcost)
+	e3:SetTarget(s.negtg)
 	e3:SetOperation(s.negop)
 	c:RegisterEffect(e3)
 end
@@ -94,14 +97,30 @@ function s.atkval(e,c)
 end
 
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-	return ep~=tp and Duel.IsChainNegatable(ev) and Duel.GetMatchingGroupCount(s.atkfilter,tp,LOCATION_ONFIELD,0,nil)>=2
+	return ep~=tp and Duel.IsChainNegatable(ev)
+end
+
+function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return Duel.IsExistingMatchingCard(s.banfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,1,nil) end
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
+	local g=Duel.SelectMatchingCard(tp,s.banfilter,tp,LOCATION_ONFIELD+LOCATION_GRAVE,0,1,1,nil)
+	Duel.Remove(g,POS_FACEUP,REASON_COST)
+end
+
+function s.banfilter(c)
+	return c:IsSetCard(0x7c) and c:IsSpellTrap() and c:IsAbleToRemoveAsCost()
+end
+
+function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
+	if chk==0 then return true end
+	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
+	if re:GetHandler():IsDestructable() then
+		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
+	end
 end
 
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
-		Duel.Hint(HINT_CARD,0,id)
-		if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
-			Duel.Destroy(re:GetHandler(),REASON_EFFECT)
-		end
+	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
+		Duel.Destroy(re:GetHandler(),REASON_EFFECT)
 	end
 end
