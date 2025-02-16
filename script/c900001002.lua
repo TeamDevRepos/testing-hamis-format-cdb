@@ -25,6 +25,16 @@ function s.initial_effect(c)
 	e2:SetTarget(aux.TargetBoolFunction(Card.IsSetCard,0x79))
 	e2:SetValue(s.atkval)
 	c:RegisterEffect(e2)
+
+	-- Negate Spell/Trap if controlling 2 or more Fire Formation
+	local e3=Effect.CreateEffect(c)
+	e3:SetCategory(CATEGORY_NEGATE+CATEGORY_DESTROY)
+	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e3:SetCode(EVENT_CHAINING)
+	e3:SetRange(LOCATION_MZONE)
+	e3:SetCondition(s.negcon)
+	e3:SetOperation(s.negop)
+	c:RegisterEffect(e3)
 end
 
 function s.setcon(e,tp,eg,ep,ev,re,r,rp)
@@ -80,5 +90,18 @@ function s.aclimit(e,re,tp)
 end
 
 function s.atkval(e,c)
-	return Duel.GetMatchingGroupCount(s.atkfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil)*100
+	return Duel.GetMatchingGroupCount(s.atkfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,0,nil)*200
+end
+
+function s.negcon(e,tp,eg,ep,ev,re,r,rp)
+	return ep~=tp and Duel.IsChainNegatable(ev) and Duel.GetMatchingGroupCount(s.atkfilter,tp,LOCATION_ONFIELD,0,nil)>=2
+end
+
+function s.negop(e,tp,eg,ep,ev,re,r,rp)
+	if Duel.SelectYesNo(tp,aux.Stringid(id,1)) then
+		Duel.Hint(HINT_CARD,0,id)
+		if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
+			Duel.Destroy(re:GetHandler(),REASON_EFFECT)
+		end
+	end
 end
