@@ -97,7 +97,8 @@ function s.atkval(e,c)
 end
 
 function s.negcon(e,tp,eg,ep,ev,re,r,rp)
-	return ep~=tp and Duel.IsChainNegatable(ev)
+	-- Verifica si la carta activada es una carta mágica o trampa y si su efecto es negable
+	return ep~=tp and Duel.IsChainNegatable(ev) and re:IsActiveType(TYPE_SPELL+TYPE_TRAP)
 end
 
 function s.negcost(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -113,14 +114,10 @@ end
 
 function s.negtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)
-	if re:GetHandler():IsDestructable() then
-		Duel.SetOperationInfo(0,CATEGORY_DESTROY,eg,1,0,0)
-	end
+	Duel.SetOperationInfo(0,CATEGORY_NEGATE,eg,1,0,0)  -- Solo niega la activación de la carta
 end
 
 function s.negop(e,tp,eg,ep,ev,re,r,rp)
-	if Duel.NegateActivation(ev) and re:GetHandler():IsRelateToEffect(re) then
-		Duel.Destroy(re:GetHandler(),REASON_EFFECT)
-	end
+	-- Solo niega la activación sin destruir
+	Duel.NegateActivation(ev)
 end
