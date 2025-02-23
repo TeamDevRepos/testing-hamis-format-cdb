@@ -9,6 +9,7 @@ function s.initial_effect(c)
 		s[1]=nil
 		s[2]=0
 		s[3]=0
+		s[4]={}
 		local ge1=Effect.CreateEffect(c)
 		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		ge1:SetCode(EVENT_ADJUST)
